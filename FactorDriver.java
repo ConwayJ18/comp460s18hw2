@@ -1,29 +1,39 @@
 import java.io.*;
 import java.util.*;
-
+/**
+ * Counts the number of factors of a large testNumber
+ * using 8 different threads.
+ *
+ * @author Jess Conway
+ * @version 02/05/2018
+ */
 class FactorChecker extends Thread {
 
-  private int threadNumber;
+  private long threadNumber;
   private long testNumber;
   private int counter;
 
-  public FactorChecker(int threadNumber, long testNumber)
+  public FactorChecker(long threadNumber, long testNumber)
   {
      this.threadNumber = threadNumber;
      this.testNumber = testNumber;
   }
 
- public void run()
- {
-     for(int k = threadNumber; k <= Math.sqrt(testNumber); k+=8)
+  public void run()
+  {
+     for(long k = threadNumber; k*k <= testNumber; k+=8)
      {
-         if(testNumber%k == 0)
-           counter += 2;
+          if(testNumber%k == 0)
+          counter += 2;
      }
- }
+  }
+
+  public int getCounter()
+  {
+     return counter;
+  }
 
 }
-
 
 class FactorDriver {
 
@@ -44,7 +54,6 @@ class FactorDriver {
             long testNumber = lowerBound + (long)(randomGenerator.nextDouble()*(upperBound-lowerBound));
             int counter = 0;
 
-
     		    //Start clock
             long startTime = System.nanoTime();
 
@@ -53,6 +62,7 @@ class FactorDriver {
             {
                 thrd[k] = new FactorChecker(k+1, testNumber);
                 thrd[k].run();
+                counter += thrd[k].getCounter();
             }
 
             //Stop clock

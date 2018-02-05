@@ -33,7 +33,7 @@ class MatrixDriver2 {
      public static void main(String[] args)
      {
           //Initialize variables
-          int n = 2000;
+          int n = 8;
           int max = 100;
           int min = 0;
           Random rand = new Random();
@@ -67,10 +67,10 @@ class MatrixDriver2 {
           for(int i=0;i<n;i++)
           {
              for(int j=0;j<n;j++)
-              {
+             {
                 thrd[i][j]=new MatrixProduct(A,B,C,i,j,n);
                 thrd[i][j].start();
-              }
+             }
           }
 
           for(int i=0;i<n;i++)
