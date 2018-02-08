@@ -16,7 +16,6 @@ class MatrixDriver extends Thread {
 
    public void run()
    {
-       System.out.println("check"+threadNumber);
        for (int i = threadNumber; i < n; i+= threads) { // aRow
 
             for (int j = 0; j < n; j++) { // bColumn
@@ -30,7 +29,7 @@ class MatrixDriver extends Thread {
 
    public static void main(String[] args)
    {
-        threads = 2;
+        threads = 8;
         n = 10000;
         int max = 100;
         int min = 0;
@@ -45,8 +44,7 @@ class MatrixDriver extends Thread {
         {
           for(int j=0;j<n;j++)
           {
-              //A[i][j]=rand.nextInt((max - min) + 1) + min;
-              A[i][j]=i+j;
+              A[i][j]=rand.nextInt((max - min) + 1) + min;
           }
         }
         System.out.println("Matrix A generated.");
@@ -56,8 +54,7 @@ class MatrixDriver extends Thread {
         {
           for(int j=0;j<n;j++)
           {
-             // B[i][j]=rand.nextInt((max - min) + 1) + min;
-             B[i][j]=i+j+1;
+             B[i][j]=rand.nextInt((max - min) + 1) + min;
           }
         }
         System.out.println("Matrix B generated.");

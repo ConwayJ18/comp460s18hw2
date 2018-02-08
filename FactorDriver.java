@@ -7,16 +7,18 @@ import java.util.*;
  * @author Jess Conway
  * @version 02/05/2018
  */
-class FactorDriver extends Thread {
+class FactorChecker extends Thread {
 
-  private static long threadNumber;
-  private static long testNumber;
-  private static int threads;
-  private static int counter;
+  private long threadNumber;
+  private long testNumber;
+  private int threads;
+  private int counter;
 
-  public FactorDriver(long threadNumber)
+  public FactorChecker(long threadNumber, long testNumber, int threads)
   {
      this.threadNumber = threadNumber;
+     this.testNumber = testNumber;
+     this.threads = threads;
   }
 
   public void run()
@@ -28,57 +30,67 @@ class FactorDriver extends Thread {
      }
   }
 
-  public static void main(String[] args)
+  public int getCounter()
   {
-      Random randomGenerator = new Random();
-      threads = 8;
-      FactorDriver[] thrd= new FactorDriver[threads];
-      double sum;
-      double avg;
-
-      for(int i=12; i<=18; i++)
-      {
-        sum = 0;
-        for(int j=0; j<=10; j++)
-        {
-          long lowerBound = (long)Math.pow(10,i-1);
-          long upperBound = (long)Math.pow(10,i-1) + (long)Math.pow(10,i-1)-1;
-          long testNumber = lowerBound + (long)(randomGenerator.nextDouble()*(upperBound-lowerBound));
-          int counter = 0;
-
-  		    //Start clock
-          long startTime = System.nanoTime();
-
-          //Start calculation
-          for(int k = 0; k < threads; k++)
-          {
-              thrd[k] = new FactorDriver(k+1);
-              thrd[k].start();
-          }
-
-          for(int k=0;k<threads;k++)
-          {
-                try
-                {
-                    thrd[k].join();
-                }
-                catch(InterruptedException e){}
-          }
-
-          //Stop clock
-          long endTime = System.nanoTime();
-
-          //Calculate time elapsed
-          long timeElapsedInMilliseconds = (endTime - startTime) / 1000000;
-
-          //Print results
-          System.out.println("The number of factors of the number " + testNumber + " is " + counter + ".");
-          System.out.println("That calculation took " + timeElapsedInMilliseconds + " milliseconds.");
-          sum += timeElapsedInMilliseconds;
-        }
-        avg = sum/10;
-        System.out.println("The average time taken for a " + i + " digit number is " + avg + " ms.");
-      }
+     return counter;
   }
+
+}
+
+class FactorDriver {
+
+    public static void main(String[] args)
+    {
+        Random randomGenerator = new Random();
+        int threads = 8;
+        FactorChecker[] thrd= new FactorChecker[8];
+        double sum;
+        double avg;
+
+        for(int i=12; i<=18; i++)
+        {
+          sum = 0;
+          for(int j=0; j<=10; j++)
+          {
+            long lowerBound = (long)Math.pow(10,i-1);
+            long upperBound = (long)Math.pow(10,i-1) + (long)Math.pow(10,i-1)-1;
+            long testNumber = lowerBound + (long)(randomGenerator.nextDouble()*(upperBound-lowerBound));
+            int counter = 0;
+
+    		    //Start clock
+            long startTime = System.nanoTime();
+
+            //Start calculation
+            for(int k = 0; k < threads; k++)
+            {
+                thrd[k] = new FactorChecker(k+1, testNumber, threads);
+                thrd[k].start();
+            }
+
+            for(int k=0;k<threads;k++)
+            {
+                  try
+                  {
+                      thrd[k].join();
+                  }
+                  catch(InterruptedException e){}
+                  counter += thrd[k].getCounter();
+            }
+
+            //Stop clock
+            long endTime = System.nanoTime();
+
+            //Calculate time elapsed
+            long timeElapsedInMilliseconds = (endTime - startTime) / 1000000;
+
+            //Print results
+            System.out.println("The number of factors of the number " + testNumber + " is " + counter + ".");
+            System.out.println("That calculation took " + timeElapsedInMilliseconds + " milliseconds.");
+            sum += timeElapsedInMilliseconds;
+          }
+          avg = sum/10;
+          System.out.println("The average time taken for a " + i + " digit number is " + avg + " ms.");
+        }
+    }
 
 }
