@@ -14,7 +14,7 @@ class FactorDriver extends Thread {
   private static int threads;
   private static int counter;
 
-  public FactorThread(long threadNumber)
+  public FactorDriver(long threadNumber)
   {
      this.threadNumber = threadNumber;
   }
@@ -32,7 +32,7 @@ class FactorDriver extends Thread {
   {
       Random randomGenerator = new Random();
       threads = 8;
-      FactorThread[] thrd= new FactorThread[threads];
+      FactorDriver[] thrd= new FactorDriver[threads];
       double sum;
       double avg;
 
@@ -52,7 +52,7 @@ class FactorDriver extends Thread {
           //Start calculation
           for(int k = 0; k < threads; k++)
           {
-              thrd[k] = new FactorThread(k+1, testNumber, threads);
+              thrd[k] = new FactorDriver(k+1);
               thrd[k].start();
           }
 

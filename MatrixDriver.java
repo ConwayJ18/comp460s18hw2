@@ -9,7 +9,7 @@ class MatrixDriver extends Thread {
     private static int threads;
     private int threadNumber;
 
-    public MatrixThread(int threadNumber)
+    public MatrixDriver(int threadNumber)
     {
        this.threadNumber=threadNumber;
     }
@@ -38,7 +38,7 @@ class MatrixDriver extends Thread {
         A=new int[n][n];
         B=new int[n][n];
         C=new int[n][n];
-        MatrixThread[] thrd = new MatrixThread[threads];
+        MatrixDriver[] thrd = new MatrixDriver[threads];
 
         //Create A
         for(int i=0;i<n;i++)
@@ -68,7 +68,7 @@ class MatrixDriver extends Thread {
         //Run calculation
         for(int i=0;i<threads;i++)
         {
-           thrd[i] = new MatrixThread(i);
+           thrd[i] = new MatrixDriver(i);
            thrd[i].start();
         }
 
