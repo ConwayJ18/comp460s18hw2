@@ -1,95 +1,93 @@
-import java.io.*;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
-class MatrixProduct extends Thread {
-    private int[][] A;
-    private int[][] B;
-    private int[][] C;
-    private int n;
-    private int threads;
+class MatrixDriver extends Thread {
+    private static int[][] A;
+    private static int[][] B;
+    private static int[][] C;
+    private static int n;
+    private static int threads;
     private int threadNumber;
 
-    public MatrixProduct(int[][] A,int[][] B,int[][] C, int n, int threads, int threadNumber)
+    public MatrixThread(int threadNumber)
     {
-       this.A=A;
-       this.B=B;
-       this.C=C;
-       this.n=n;
-       this.threads=threads;
        this.threadNumber=threadNumber;
     }
 
    public void run()
    {
-     for (int i = 0; i < n; i+= threads) { // aRow
-          for (int j = 0; j < n; j++) { // bColumn
-              for (int k = 0; k < n; k++) { // aColumn
-                  C[i][j] += A[i][k] * B[k][j];
-              }
-          }
-      }
-   }
-}
+       System.out.println("check"+threadNumber);
+       for (int i = threadNumber; i < n; i+= threads) { // aRow
 
-class MatrixDriver {
-
-     public static void main(String[] args)
-     {
-          //Initialize variables
-          int threads = 8;
-          int n = 5000;
-          int max = 100;
-          int min = 0;
-          Random rand = new Random();
-          int[][] A=new int[n][n];
-          int[][] B=new int[n][n];
-          int[][] C=new int[n][n];
-          MatrixProduct[] thrd = new MatrixProduct[threads];
-
-          //Create A
-          for(int i=0;i<n;i++)
-          {
-            for(int j=0;j<n;j++)
-            {
-                A[i][j]=rand.nextInt((max - min) + 1) + min;
-            }
-          }
-
-          //Create B
-          for(int i=0;i<n;i++)
-          {
-            for(int j=0;j<n;j++)
-            {
-                B[i][j]=rand.nextInt((max - min) + 1) + min;
-            }
-          }
-
-          //Start clock
-          long startTime = System.nanoTime();
-
-          //Run calculation
-          for(int i=0;i<threads;i++)
-          {
-             thrd[i] = new MatrixProduct(A, B, C, n, threads, i);
-             thrd[i].run();
-          }
-
-          for(int i=0;i<threads;i++)
-          {
-                try
-                {
-                    thrd[i].join();
+            for (int j = 0; j < n; j++) { // bColumn
+                for (int k = 0; k < n; k++) { // aColumn
+                    C[i][j] += A[i][k] * B[k][j];
                 }
-                catch(InterruptedException e){}
+            }
+        }
+   }
+
+
+   public static void main(String[] args)
+   {
+        threads = 2;
+        n = 10000;
+        int max = 100;
+        int min = 0;
+        Random rand = new Random();
+        A=new int[n][n];
+        B=new int[n][n];
+        C=new int[n][n];
+        MatrixThread[] thrd = new MatrixThread[threads];
+
+        //Create A
+        for(int i=0;i<n;i++)
+        {
+          for(int j=0;j<n;j++)
+          {
+              //A[i][j]=rand.nextInt((max - min) + 1) + min;
+              A[i][j]=i+j;
           }
+        }
+        System.out.println("Matrix A generated.");
 
-          //Stop clock
-          long endTime = System.nanoTime();
+        //Create B
+        for(int i=0;i<n;i++)
+        {
+          for(int j=0;j<n;j++)
+          {
+             // B[i][j]=rand.nextInt((max - min) + 1) + min;
+             B[i][j]=i+j+1;
+          }
+        }
+        System.out.println("Matrix B generated.");
 
-          //Calculate time elapsed
-          long timeElapsedInMilliseconds = (endTime - startTime) / 1000000;
+        //Start clock
+        long startTime = System.currentTimeMillis();
 
-          //Print results
-          System.out.println("The calculation of the matrix of dimension " + n + " took " + timeElapsedInMilliseconds + " milliseconds.");
-      }
+        //Run calculation
+        for(int i=0;i<threads;i++)
+        {
+           thrd[i] = new MatrixThread(i);
+           thrd[i].start();
+        }
+
+        for(int i=0;i<threads;i++)
+        {
+              try
+              {
+                  thrd[i].join();
+              }
+              catch(InterruptedException e){}
+        }
+
+        //Stop clock
+        long endTime = System.currentTimeMillis();
+
+        //Calculate time elapsed
+        long timeElapsedSeconds = TimeUnit.MILLISECONDS.toSeconds(endTime - startTime);
+
+        //Print results
+        System.out.println("The calculation of the matrix of dimension " + n + " took " + timeElapsedSeconds + " seconds.");
+    }
 }
