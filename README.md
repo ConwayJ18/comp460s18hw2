@@ -1,5 +1,6 @@
-# comp460s18hw2
-http://github.com/ConwayJ18/comp460s18hw2
+COMP 460, Spring 2018 — Homework 2
+
+Repo: https://github.com/ConwayJ18/comp460s18hw2/
 
 Contents:
 
